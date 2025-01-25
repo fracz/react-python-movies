@@ -1,5 +1,6 @@
 import './App.css';
 import {useState} from "react";
+import { useEffect } from 'react';
 import "milligram";
 import MovieForm from "./MovieForm";
 import MoviesList from "./MoviesList";
@@ -7,6 +8,18 @@ import MoviesList from "./MoviesList";
 function App() {
     const [movies, setMovies] = useState([]);
     const [addingMovie, setAddingMovie] = useState(false);
+
+
+    useEffect(() => {
+        const fetchMovies = async () => {
+            const response = await fetch(`/movies`);
+            if (response.ok) {
+                const movies = await response.json();
+                setMovies(movies);
+            }
+        };
+        fetchMovies();
+    }, []);
 
     async function handleAddMovie(movie) {
       const response = await fetch('/movies', {
