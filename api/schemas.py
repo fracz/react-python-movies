@@ -27,6 +27,9 @@ class Actor(ActorBase):
         orm_mode = True
         getter_dict = PeeweeGetterDict
 
+class ActorAssign(BaseModel):
+    actor_id: int
+
 class MovieBase(BaseModel):
     title: str
     year: int
