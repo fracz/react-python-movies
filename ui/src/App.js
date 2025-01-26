@@ -1,9 +1,10 @@
 import './App.css';
 import {useState} from "react";
-import { useEffect } from 'react';
+import {useEffect} from 'react';
 import "milligram";
 import MovieForm from "./MovieForm";
 import MoviesList from "./MoviesList";
+
 
 function App() {
     const [movies, setMovies] = useState([]);
@@ -28,7 +29,8 @@ function App() {
         headers: { 'Content-Type': 'application/json' }
       });
       if (response.ok) {
-        setMovies([...movies, movie]);
+        const movieFromServer = await response.json();
+        setMovies([...movies, movieFromServer]);
         setAddingMovie(false);
       }
     }
