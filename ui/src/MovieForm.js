@@ -1,21 +1,43 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import React from 'react'
+import Select from 'react-select'
 
 export default function MovieForm(props) {
     const [title, setTitle] = useState('');
     const [year, setYear] = useState('');
     const [director, setDirector] = useState('');
     const [description, setDescription] = useState('');
+    const [actors, setActors] = useState([]);
+    const [selectedActors, setSelectedActors] = useState([]);
+
+    useEffect(() => {
+        const fetchActors = async () => {
+            const response = await fetch('/actors');
+            if (response.ok) {
+                const actors = await response.json();
+                setActors(actors.map(actor => ({
+                    value: actor.id,
+                    label: `${actor.name} ${actor.surname}`
+                })));
+            }
+        };
+        fetchActors();
+    }, []);
 
     function addMovie(event) {
         event.preventDefault();
         if (title.length < 5) {
             return alert('Tytuł jest za krótki');
         }
-        props.onMovieSubmit({title, year, director, description});
+
+        const actors_id = selectedActors.map(actor => actor.value);
+
+        props.onMovieSubmit({title, year, director, description, actors_id});
         setTitle('');
         setYear('');
         setDirector('');
         setDescription('');
+        setSelectedActors([]);
     }
 
     return <form onSubmit={addMovie}>
@@ -31,6 +53,10 @@ export default function MovieForm(props) {
         <div>
             <label>Director</label>
             <input type="text" value={director} onChange={(event) => setDirector(event.target.value)}/>
+        </div>
+        <div>
+            <label>Actors</label>
+            <Select isMulti options={actors} onChange={(event) => setSelectedActors(event)}/>
         </div>
         <div>
             <label>Description</label>

@@ -6,6 +6,7 @@ import MovieForm from "./MovieForm";
 import MoviesList from "./MoviesList";
 
 
+
 function App() {
     const [movies, setMovies] = useState([]);
     const [addingMovie, setAddingMovie] = useState(false);

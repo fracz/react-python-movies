@@ -8,6 +8,10 @@ export default function MovieListItem(props) {
                 {' '}
                 <span>directed by {props.movie.director},</span>
                 {' '}
+                cast:
+                {' '}
+                {props.movie.actors.map(actor => actor.name + ' ' + actor.surname).join(", ")}
+                {' '}
                 <a onClick={props.onDelete}>Delete</a>
             </div>
             {props.movie.description}
