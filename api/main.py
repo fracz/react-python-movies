@@ -71,7 +71,7 @@ def delete_actor(actor_id: int):
     db_actor = models.Actor.filter(models.Actor.id == actor_id).first()
     if db_actor is None:
         raise HTTPException(status_code=404, detail="Actor not found")
-    db_actor.delete()
+    db_actor.delete_instance()
     return db_actor
 
 #POST http://127.0.0.1:8000/movies/2/actors
