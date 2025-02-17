@@ -35,7 +35,7 @@ class MovieBase(BaseModel):
 
 
 class MovieCreate(MovieBase):
-    pass
+    actors: List[ActorBase] = []
 
 
 class Movie(MovieBase):
@@ -45,5 +45,9 @@ class Movie(MovieBase):
     class Config:
         orm_mode = True
         getter_dict = PeeweeGetterDict
+
+class ActorMovieBase(BaseModel):
+    actor_id: int
+    movie_id: int
 
 

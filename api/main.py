@@ -22,10 +22,13 @@ def get_movies():
 
 
 @app.post("/movies", response_model=schemas.Movie)
-def add_movie(movie: schemas.MovieBase):
-    movie = models.Movie.create(**movie.dict())
+def add_movie(movie: schemas.MovieCreate):
+    movie_instance = models.Movie.create(**movie.dict(exclude={"actors"}))
+    for actor in movie.actors:
+        if (actor.name is not None) or (actor.surname is not None):
+            actor_instance = models.Actor.create(**actor.dict())
+            models.ActorMovie.create(actor=(actor_instance), movie=(movie_instance))
     return movie
-
 
 @app.get("/movies/{movie_id}", response_model=schemas.Movie)
 def get_movie(movie_id: int):
@@ -34,11 +37,30 @@ def get_movie(movie_id: int):
         raise HTTPException(status_code=404, detail="Movie not found")
     return db_movie
 
+@app.get("/actors", response_model=List[schemas.Actor])
+def get_actors():
+    return list(models.Actor.select())  
+
+@app.post("/actors", response_model=schemas.Actor)
+def add_actor(movie: schemas.ActorBase):
+    if (movie.name is None) or (movie.surname is None):
+        raise HTTPException(status_code=400, detail="Actor name and surname is required")
+    else:
+        movie = models.Actor.create(**movie.dict())
+    return movie
 
 @app.delete("/movies/{movie_id}", response_model=schemas.Movie)
 def get_movie(movie_id: int):
     db_movie = models.Movie.filter(models.Movie.id == movie_id).first()
+    db_movie_actors = models.ActorMovie.filter(models.ActorMovie.movie_id == movie_id)
+    
     if db_movie is None:
         raise HTTPException(status_code=404, detail="Movie not found")
-    db_movie.delete_instance()
+    else:
+        for actor in db_movie_actors:
+            db_actor = models.Actor.filter(models.Actor.id == actor.actor_id).first()
+            db_actor.delete_instance()
+            actor.delete_instance()
+        db_movie.delete_instance()
+
     return db_movie
