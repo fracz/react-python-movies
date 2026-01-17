@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Body
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-import requests
 from pydantic import BaseModel
 from typing import Any
 import sqlite3
