@@ -1,5 +1,5 @@
 import './App.css';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import "milligram";
 import MovieForm from "./MovieForm";
 import MoviesList from "./MoviesList";
@@ -8,9 +8,37 @@ function App() {
     const [movies, setMovies] = useState([]);
     const [addingMovie, setAddingMovie] = useState(false);
 
-    function handleAddMovie(movie) {
-        setMovies([...movies, movie]);
-        setAddingMovie(false);
+    useEffect(() => {
+        const fetchMovies = async () => {
+            const response = await fetch(`/movies`);
+            if (response.ok) {
+                const movies = await response.json();
+                setMovies(movies);
+            }
+        };
+        fetchMovies();
+    }, []);
+
+    async function handleAddMovie(movie) {
+        const response = await fetch('/movies', {
+            method: 'POST',
+            body: JSON.stringify(movie),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (response.ok) {
+            const addingResponse = await response.json();
+            movie.id = addingResponse.id;
+            setMovies([...movies, movie]);
+            setAddingMovie(false);
+        }
+    }
+
+    async function handleDeleteMovie(movie) {
+        const url = '/movies/' + movie.id;
+        const response = await fetch(url, {method: 'DELETE'});
+        if (response.ok) {
+            setMovies(movies.filter(m => m !== movie));
+        }
     }
 
     return (
@@ -19,7 +47,7 @@ function App() {
             {movies.length === 0
                 ? <p>No movies yet. Maybe add something?</p>
                 : <MoviesList movies={movies}
-                              onDeleteMovie={(movie) => setMovies(movies.filter(m => m !== movie))}
+                              onDeleteMovie={handleDeleteMovie}
                 />}
             {addingMovie
                 ? <MovieForm onMovieSubmit={handleAddMovie}
