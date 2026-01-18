@@ -17,7 +17,7 @@ function App() {
             }
         };
         fetchMovies();
-    }, []);
+    }, [movies]);
 
     async function handleAddMovie(movie) {
         movie.actors = '';
@@ -27,6 +27,8 @@ function App() {
             headers: {'Content-Type': 'application/json'}
         });
         if (response.ok) {
+            let movieWithId = await response.json();
+            movie.id = movieWithId.id;
             setMovies([...movies, movie]);
             setAddingMovie(false);
         }

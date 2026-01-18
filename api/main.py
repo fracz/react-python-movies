@@ -46,7 +46,8 @@ def add_movie(movie: Movie):
     cursor = db.cursor()
     cursor.execute(f"INSERT INTO movies (title, year, actors) VALUES ('{movie.title}', '{movie.year}', '{movie.actors}')")
     db.commit()
-    return {"message": f"Movie with id = {cursor.lastrowid} added successfully"}
+    movie_id = cursor.lastrowid
+    return {"message": f"Movie with id = {movie_id} added successfully", "movie_id": movie_id}
     # movie = models.Movie.create(**movie.dict())
     # return movie
 
@@ -71,7 +72,7 @@ def delete_movie(movie_id:int):
     db.commit()
     if cursor.rowcount == 0:
         return {"message": f"Movie with id = {movie_id} not found"}
-    return {"message": f"Movie with id = {movie_id} deleted successfully"}
+    return {"message": f"Movie with id = {movie_id} deleted successfully" }
 
 @app.delete("/movies")
 def delete_movies(movie_id:int):
