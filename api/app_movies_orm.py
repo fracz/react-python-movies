@@ -56,11 +56,29 @@ def delete_orm_movies(ids: list[int]):
 
 @app_movies_orm.put("/movies/{movie_id}")
 def update_orm_movie(movie_id: int, params: dict[str, Any]):
-    params_without_actors = {k: v for k, v in params.items() if k != 'actors'}
-    query = Movie.update(**params_without_actors).where(Movie.id == movie_id)
-    updated = query.execute()
-    if not updated:
+    movie = Movie.get_or_none(Movie.id == movie_id)
+    if movie is None:
         raise HTTPException(status_code=404, detail="Movie not found")
+
+    # Extract actor IDs if present
+    actor_ids = params.pop('actorIds', None)
+
+    # Update movie fields
+    params_without_actors = {k: v for k, v in params.items() if k not in ['actors', 'actorIds']}
+    if params_without_actors:
+        query = Movie.update(**params_without_actors).where(Movie.id == movie_id)
+        query.execute()
+
+    # Update actor associations if provided
+    if actor_ids is not None:
+        # Clear existing actor associations
+        movie.actors.clear()
+        # Add new actor associations
+        if actor_ids:
+            actors = Actor.select().where(Actor.id << actor_ids)
+            for actor in actors:
+                movie.actors.add(actor)
+
     return {"message": f"Movie with ID {movie_id} updated successfully."}
 
 @app_movies_orm.get("/actors")

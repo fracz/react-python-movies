@@ -39,20 +39,22 @@ function App() {
 
     async function handleUpdateMovie(movieData) {
         const movieToUpdate = {...editingMovie, ...movieData};
-        // The issue description states: "it should add field then with movie's id"
-        // and "request to save movie should point to put /movies/:id"
-        
-        // Ensure we don't send actors if we're not handling them yet, 
-        // as the backend might expect specific format or we just follow "do not worry about actors for now"
+
+        // Remove the actors array but keep actorIds if present
         const { actors, ...params } = movieToUpdate;
-        
+
         const response = await fetch(`/movies/${movieToUpdate.id}`, {
             method: 'PUT',
             body: JSON.stringify(params),
             headers: {'Content-Type': 'application/json'}
         });
         if (response.ok) {
-            setMovies(movies.map(m => m.id === movieToUpdate.id ? movieToUpdate : m));
+            // Refetch the movie to get the updated actors
+            const movieResponse = await fetch(`/movies/${movieToUpdate.id}`);
+            if (movieResponse.ok) {
+                const updatedMovie = await movieResponse.json();
+                setMovies(movies.map(m => m.id === movieToUpdate.id ? updatedMovie : m));
+            }
             setEditingMovie(null);
         }
     }
