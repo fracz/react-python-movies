@@ -17,6 +17,11 @@ class Actor(BaseModel):
     name = CharField()
     surname = CharField()
 
+    class Meta:
+        indexes = (
+            (('name', 'surname'), True),  # True means unique index
+        )
+
 class Movie(BaseModel):
     id = IntegerField(primary_key=True)
     title = CharField()
