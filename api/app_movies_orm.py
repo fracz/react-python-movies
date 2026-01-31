@@ -10,7 +10,12 @@ app_movies_orm = FastAPI()
 
 @app_movies_orm.get("/movies")
 async def get_orm_movies():
-    movies_list = list(Movie.select().dicts())
+    movies = Movie.select()
+    movies_list = []
+    for movie in movies:
+        movie_dict = model_to_dict(movie)
+        movie_dict["actors"] = [model_to_dict(actor) for actor in movie.actors]
+        movies_list.append(movie_dict)
     return movies_list
 
 @app_movies_orm.get("/movies/{movie_id}")
@@ -18,7 +23,9 @@ async def get_orm_single_movie(movie_id:int):
     movie = Movie.get_or_none(Movie.id == movie_id)
     if movie is None:
         raise HTTPException(status_code=404, detail="Movie not found")
-    return model_to_dict(movie)
+    movie_dict = model_to_dict(movie)
+    movie_dict["actors"] = [model_to_dict(actor) for actor in movie.actors]
+    return movie_dict
 
 @app_movies_orm.get("/movies/{movie_id}/actors")
 async def get_actors_for_movie(movie_id:int):

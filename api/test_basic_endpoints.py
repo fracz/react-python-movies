@@ -8,7 +8,11 @@ client = TestClient(app)
 def test_read_movies():
     response = client.get("/movies")
     assert response.status_code == 200
-    assert isinstance(response.json(), list)
+    movies = response.json()
+    assert isinstance(movies, list)
+    if len(movies) > 0:
+        for movie in movies:
+            assert "actors" in movie
 
 def test_read_movie_actors():
     response = client.get("/movies/1/actors")

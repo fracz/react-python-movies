@@ -1,6 +1,11 @@
+import os
 from peewee import SqliteDatabase, Model, CharField, IntegerField, TextField, ManyToManyField
 
-db = SqliteDatabase('movies-extended.db')
+# Get the directory of the current file
+current_dir = os.path.dirname(os.path.abspath(__file__))
+db_path = os.path.join(current_dir, 'movies-extended.db')
+
+db = SqliteDatabase(db_path)
 
 class BaseModel(Model):
 
