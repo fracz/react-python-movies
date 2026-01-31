@@ -79,10 +79,11 @@ function App() {
                 <EditMovieForm
                     movie={editingMovie}
                     onMovieSubmit={handleUpdateMovie}
+                    onCancel={() => setEditingMovie(null)}
                 />
             )}
             {addingMovie
-                ? <AddMovieForm onMovieSubmit={handleAddMovie} />
+                ? <AddMovieForm onMovieSubmit={handleAddMovie} onCancel={() => setAddingMovie(false)} />
                 : (!editingMovie && <button onClick={() => setAddingMovie(true)}>Add a movie</button>)}
         </div>
     );

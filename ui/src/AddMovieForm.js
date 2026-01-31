@@ -38,5 +38,7 @@ export default function AddMovieForm(props) {
             <textarea value={description} onChange={(event) => setDescription(event.target.value)}/>
         </div>
         <button type="submit">Add a movie</button>
+        &nbsp;
+        <button type="button" className="button-outline" onClick={props.onCancel}>Cancel</button>
     </form>;
 }
