@@ -17,7 +17,7 @@ function App() {
             }
         };
         fetchMovies();
-    }, [movies]);
+    }, []);
 
     async function handleAddMovie(movie) {
         movie.actors = '';
