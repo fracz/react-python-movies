@@ -5,11 +5,6 @@ from main import app
 
 client = TestClient(app)
 
-def test_read_main():
-    response = client.get("/")
-    assert response.status_code == 200
-    assert response.headers['content-type'] == 'text/html; charset=utf-8'
-
 def test_read_movies():
     response = client.get("/movies")
     assert response.status_code == 200

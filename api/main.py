@@ -13,11 +13,11 @@ class Movie(BaseModel):
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="ui/public", check_dir=False), name="static")
+app.mount("/static", StaticFiles(directory="../ui/build/static", check_dir=False), name="static")
 
 @app.get("/")
 def serve_react_app():
-   return FileResponse("ui/public/index.html")
+   return FileResponse("../ui/build/index.html")
 
 app.mount("/", app_movies_orm)
 
