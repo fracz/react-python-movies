@@ -1,9 +1,13 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import MovieListItem from "./MovieListItem";
 import MovieSearch from "./MovieSearch";
 
 export default function MoviesList(props) {
     const [filteredMovies, setFilteredMovies] = useState(props.movies);
+
+    useEffect(() => {
+        setFilteredMovies(props.movies);
+    }, [props.movies]);
 
     const moviesToDisplay = filteredMovies;
 
