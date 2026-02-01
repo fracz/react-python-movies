@@ -19,4 +19,4 @@ Oceny będą następujące:
  - [ ] Pobaw się animacjami w React by ożywić interfejs Twojej aplikacji.
  - [ ] Dodaj listę aktorów (podlgąd, jacy aktorzy występują w systemie>
  - [x] Pozwól na edycję filmów (nazwy i opisu).
- - [ ] Dodaj wyszukiwarkę filmów. Być może opartą o wektorową bazę danych? :)
+ - [x] Dodaj wyszukiwarkę filmów. Być może opartą o wektorową bazę danych? :)
