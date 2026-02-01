@@ -1,3 +1,5 @@
+import DeleteButton from './DeleteButton';
+
 export default function MovieListItem(props) {
     return (
         <div>
@@ -8,9 +10,9 @@ export default function MovieListItem(props) {
                 {' '}
                 directed by {props.movie.director}
                 {' '}
-                <a onClick={props.onEdit}>Edit</a>
+                <a  href="#" onClick={props.onEdit}>Edit</a>
                 {' '}
-                <a onClick={props.onDelete}>Delete</a>
+                <DeleteButton onDelete={props.onDelete} />
             </div>
             {props.movie.actors && props.movie.actors.length > 0 && (
                 <div>
