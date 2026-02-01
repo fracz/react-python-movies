@@ -17,6 +17,6 @@ Oceny będą następujące:
  - [x] Zapytaj użytkownika, czy na pewno chce usunąć film po kliknięciu w przycisk usuwania. Być może też react-toastify okaże się użyteczne?
  - [ ] Dodaj animacje ładowania, gdy frontend czeka na odpowiedź serwera. Przykłady: https://loading.io/css/.
  - [ ] Pobaw się animacjami w React by ożywić interfejs Twojej aplikacji.
- - [ ] Dodaj listę aktorów (podlgąd, jacy aktorzy występują w systemie>
+ - [x] Dodaj listę aktorów (podlgąd, jacy aktorzy występują w systemie>
  - [x] Pozwól na edycję filmów (nazwy i opisu).
  - [x] Dodaj wyszukiwarkę filmów. Być może opartą o wektorową bazę danych? :)

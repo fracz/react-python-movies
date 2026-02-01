@@ -37,6 +37,7 @@
   }
 }
 
-ul.movies-list {
+ul.movies-list,
+ul.actors-list {
   list-style: none;
 }
