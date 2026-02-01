@@ -1,4 +1,5 @@
 import {useState} from "react";
+import { toast } from 'react-toastify';
 
 export default function AddMovieForm(props) {
     const [title, setTitle] = useState('');
@@ -10,7 +11,8 @@ export default function AddMovieForm(props) {
         event.preventDefault();
         console.log('AddMovieForm handleSubmit', {title, year, director, description});
         if (title.length < 5) {
-            return alert('Tytuł jest za krótki');
+            toast.warning('Tytuł jest za krótki');
+            return;
         }
         props.onMovieSubmit({title, year, director, description});
         setTitle('');

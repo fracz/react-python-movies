@@ -1,5 +1,6 @@
 import {useState, useEffect} from "react";
 import CreatableSelect from "react-select/creatable";
+import { toast } from 'react-toastify';
 
 export default function EditMovieForm(props) {
     const [title, setTitle] = useState(props.movie.title);
@@ -12,10 +13,16 @@ export default function EditMovieForm(props) {
     useEffect(() => {
         // Fetch all actors from the API only once
         const fetchActors = async () => {
-            const response = await fetch('/actors');
-            if (response.ok) {
-                const actorsData = await response.json();
-                setActors(actorsData);
+            try {
+                const response = await fetch('/actors');
+                if (response.ok) {
+                    const actorsData = await response.json();
+                    setActors(actorsData);
+                } else {
+                    toast.error('Failed to fetch actors');
+                }
+            } catch (error) {
+                toast.error('Error fetching actors: ' + error.message);
             }
         };
         fetchActors();
@@ -36,7 +43,7 @@ export default function EditMovieForm(props) {
         // Parse the input - expect format "FirstName LastName"
         const parts = inputValue.trim().split(/\s+/);
         if (parts.length < 2) {
-            alert('Please enter both first name and last name (e.g., "John Doe")');
+            toast.warning('Please enter both first name and last name (e.g., "John Doe")');
             return;
         }
 
@@ -68,13 +75,14 @@ export default function EditMovieForm(props) {
                 };
                 setSelectedActors([...selectedActors, newOption]);
 
+                toast.success(`Actor "${newActor.name} ${newActor.surname}" created successfully!`);
                 return newOption;
             } else {
-                alert('Failed to create actor');
+                toast.error('Failed to create actor');
             }
         } catch (error) {
             console.error('Error creating actor:', error);
-            alert('Error creating actor');
+            toast.error('Error creating actor: ' + error.message);
         }
     }
 
@@ -83,7 +91,8 @@ export default function EditMovieForm(props) {
         const actorIds = selectedActors.map(actor => actor.value);
         console.log('EditMovieForm handleSubmit', {title, year, director, description, actorIds});
         if (title.length < 5) {
-            return alert('Tytuł jest za krótki');
+            toast.warning('Tytuł jest za krótki');
+            return;
         }
         props.onMovieSubmit({title, year, director, description, actorIds});
     }

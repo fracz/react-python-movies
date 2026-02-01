@@ -4,6 +4,8 @@ import "milligram";
 import AddMovieForm from "./AddMovieForm";
 import EditMovieForm from "./EditMovieForm";
 import MoviesList from "./MoviesList";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
     const [movies, setMovies] = useState([]);
@@ -12,10 +14,16 @@ function App() {
 
     useEffect(() => {
         const fetchMovies = async () => {
-            const response = await fetch(`/movies`);
-            if (response.ok) {
-                const movies = await response.json();
-                setMovies(movies);
+            try {
+                const response = await fetch(`/movies`);
+                if (response.ok) {
+                    const movies = await response.json();
+                    setMovies(movies);
+                } else {
+                    toast.error('Failed to fetch movies');
+                }
+            } catch (error) {
+                toast.error('Error fetching movies: ' + error.message);
             }
         };
         fetchMovies();
@@ -24,16 +32,23 @@ function App() {
     async function handleAddMovie(movie) {
         console.log('handleAddMovie', movie);
         movie.actors = '';
-        const response = await fetch('/movies', {
-            method: 'POST',
-            body: JSON.stringify(movie),
-            headers: {'Content-Type': 'application/json'}
-        });
-        if (response.ok) {
-            let movieResponse = await response.json();
-            movie.id = movieResponse.movie_id;
-            setMovies([...movies, movie]);
-            setAddingMovie(false);
+        try {
+            const response = await fetch('/movies', {
+                method: 'POST',
+                body: JSON.stringify(movie),
+                headers: {'Content-Type': 'application/json'}
+            });
+            if (response.ok) {
+                let movieResponse = await response.json();
+                movie.id = movieResponse.movie_id;
+                setMovies([...movies, movie]);
+                setAddingMovie(false);
+                toast.success('Movie created successfully!');
+            } else {
+                toast.error('Failed to create movie');
+            }
+        } catch (error) {
+            toast.error('Error creating movie: ' + error.message);
         }
     }
 
@@ -43,28 +58,44 @@ function App() {
         // Remove the actors array but keep actorIds if present
         const { actors, ...params } = movieToUpdate;
 
-        const response = await fetch(`/movies/${movieToUpdate.id}`, {
-            method: 'PUT',
-            body: JSON.stringify(params),
-            headers: {'Content-Type': 'application/json'}
-        });
-        if (response.ok) {
-            // Refetch the movie to get the updated actors
-            const movieResponse = await fetch(`/movies/${movieToUpdate.id}`);
-            if (movieResponse.ok) {
-                const updatedMovie = await movieResponse.json();
-                setMovies(movies.map(m => m.id === movieToUpdate.id ? updatedMovie : m));
+        try {
+            const response = await fetch(`/movies/${movieToUpdate.id}`, {
+                method: 'PUT',
+                body: JSON.stringify(params),
+                headers: {'Content-Type': 'application/json'}
+            });
+            if (response.ok) {
+                // Refetch the movie to get the updated actors
+                const movieResponse = await fetch(`/movies/${movieToUpdate.id}`);
+                if (movieResponse.ok) {
+                    const updatedMovie = await movieResponse.json();
+                    setMovies(movies.map(m => m.id === movieToUpdate.id ? updatedMovie : m));
+                    toast.success('Movie updated successfully!');
+                } else {
+                    toast.error('Failed to refetch updated movie');
+                }
+                setEditingMovie(null);
+            } else {
+                toast.error('Failed to update movie');
             }
-            setEditingMovie(null);
+        } catch (error) {
+            toast.error('Error updating movie: ' + error.message);
         }
     }
 
     async function handleDeleteMovie(movie) {
         console.log(movie);
         const url = `/movies/${movie.id}`
-        const response = await fetch(url, {method: 'DELETE'});
-        if (response.ok) {
-            setMovies(movies.filter(m => m !== movie))
+        try {
+            const response = await fetch(url, {method: 'DELETE'});
+            if (response.ok) {
+                setMovies(movies.filter(m => m !== movie));
+                toast.success('Movie deleted successfully!');
+            } else {
+                toast.error('Failed to delete movie');
+            }
+        } catch (error) {
+            toast.error('Error deleting movie: ' + error.message);
         }
     }
 
@@ -87,6 +118,17 @@ function App() {
             {addingMovie
                 ? <AddMovieForm onMovieSubmit={handleAddMovie} onCancel={() => setAddingMovie(false)} />
                 : (!editingMovie && <button onClick={() => setAddingMovie(true)}>Add a movie</button>)}
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
         </div>
     );
 }
