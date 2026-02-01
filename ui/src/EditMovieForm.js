@@ -90,10 +90,7 @@ export default function EditMovieForm(props) {
 
     return <form onSubmit={handleSubmit}>
         <h2>Edit movie</h2>
-        <div>
-            <label>Movie ID</label>
-            <input type="text" value={props.movie.id} readOnly disabled />
-        </div>
+        <input type="hidden" value={props.movie.id} />
         <div>
             <label>Tytuł</label>
             <input type="text" value={title} onChange={(event) => setTitle(event.target.value)}/>
